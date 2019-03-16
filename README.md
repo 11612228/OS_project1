@@ -5,11 +5,13 @@
 ### 1.Data structures and functions
 
 #### Added Structs
+##### `list * block_list`(devices/timer.c)
+
 
 #### Modified Structs
 
 ##### `struct thread`(threads/thread.h)
-- add `int64_t block_time` to thread.
+- add `int64_t blocked_tick` to thread.
 
 
 #### Added Functions
