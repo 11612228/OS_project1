@@ -4,9 +4,17 @@
 
 ### 1.Data structures and functions
 
-#### Edited Structs
+#### Added Structs
 
-##### `int64_t thread_blocked`(threads/thread.h)
+#### Modified Structs
+
+##### `struct thread`(threads/thread.h)
+- add `int64_t block_time` to thread.
+
+
+#### Added Functions
+#### Modified Functions
+
 
 
 
@@ -19,6 +27,13 @@
 ## Task 2: Priority Scheduler
 
 ### 1.Data structures and functions
+#### Added Structs
+
+#### Modified Structs
+
+#### Added Functions
+#### Modified Functions
+
 
 ### 2.Algorithms
 
@@ -29,6 +44,12 @@
 ## Task 3: Multi-level Feedback Queue Scheduler
 
 ### 1.Data structures and functions
+#### Added Structs
+
+#### Modified Structs
+
+#### Added Functions
+#### Modified Functions
 
 ### 2.Algorithms
 
