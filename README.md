@@ -45,22 +45,44 @@ Turn the current thread into a `THREAD_BLOCKED` state, record the time to be blc
 ### 1.Data structures and functions
 
 #### New Structs
-
+##### `struct lock`
+- the member variables:
+```
+struct list_elem elm;
+int max_priority;
+```
 #### Modified Structs
+##### `struct thread`(threads/thread.h)
+- Add the following member variables:
+```
+int base_priority;
+struct list locks;
+struct lock *lock_waiting;
+```
 
 #### New Functions
 ##### `bool thread_cmp_priority (const struct list_elem *a, const struct list_elem *b, void *aux UNUSED)`
 - Compares the priority of thread a and thread b, and returns true if a>b.
+##### `bool lock_cmp_priority (const struct list_elem *a, const struct list_elem *b, void *aux UNUSED)`
+- A function that can sort the lock list.
 ##### `void list_insert_ordered (struct list *list, struct list_elem *elem,list_less_func *less, void *aux)`
 - A function can insert the threads sequentially into the ready queue.
+##### `void thread_remove_lock(struct lock *lock)`
+- Remove the `lock` from the `locks`
+- Call `thread_update_priority(thread_current())`to update the current thread's priority.
+##### `void thread_update_priority (struct thread *t)`
+- If the thread's `locks` is not empty and `lock[0]`'s priority is greater than the thread's `base_priority`, then update the `max_priority`.
 #### Modified Functions
 ##### `void thread_unblock (struct thread *t)`(threads/thread.c)
 - Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
 ##### `void thread_yield (void)`(threads/thread.c)
 - Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
 ##### `void thread_init(void)`(threads/thread.c)
+- Initalize thread's priority and locks.
 - Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
 ##### `void thread_set_priority (int new_priority)`(threads/thread.c)
+- Update the `current_thread->base_priority`.
+- Record the old_priority.
 - Call `thread_yield ()`
 ##### `tid_t thread_create (const char *name,int priority,thread_func *function, void *aux)`(threads/thread.c)
 - After calling thread_unblock(t)，add the following code
@@ -70,6 +92,11 @@ if (thread_current ()->priority < priority)
      thread_yield ();
    }
 ```
+##### `void lock_acquire (struct lock *lock)`
+- Add a line of code that can recursive priority donation before P operation.
+- Undoing donations after becoming the holder of the lock.
+##### `void lock_release (struct lock * lock)`
+- Call `thread_remove_lock (lock)`
 ### 2.Algorithms
 
 ### 3.Synchronization
