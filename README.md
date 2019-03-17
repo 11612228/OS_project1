@@ -5,19 +5,29 @@
 ### 1.Data structures and functions
 
 #### Added Structs
-##### `list * block_list`(devices/timer.c)
+##### `list * sleep_list`(devices/timer.c)
 
 
 #### Modified Structs
 
 ##### `struct thread`(threads/thread.h)
-- add `int64_t blocked_tick` to thread.
+- add `int64_t block_tick` to thread.
 
 
 #### Added Functions
+##### `thread_sleep(int64_t ticks)`(threads/thread.c)
+- /
+##### `void thread_foreach(void);`(threads/thread.c)
+- /
+##### `void blocked_thread_check (struct thread *t, void *aux UNUSED)`(threads/thread.c)
 #### Modified Functions
+##### `timer_sleep()`(devices/timer.c)
+- Do not use busy waiting
 
-
+##### `void timer_init (void)`(devices/timer.c)
+- /
+##### `static void timer_interrupt (struct intr_frame * args UNUSED)`(devices/timer.c)
+- /
 
 
 ### 2.Algorithms
