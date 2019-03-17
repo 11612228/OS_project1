@@ -157,6 +157,7 @@ ready_threads at any time-step set to 0
 TIMER_FREQ = 100
 A's nice = 0; B's nice = 10; C's nice = 20;
 order to calculate load_avg, recent_cpu, priority is recent_cpu -> load -> priority
+
 timer ticks | R(A) | R(B) | R(C) | P(A) | P(B) | P(C) | thread to run
 ------------|------|------|------|------|------|------|--------------
 0 |   0.0 |   0.0 |   0.0 |  63.0 | 43.0 |  23.0 | A
