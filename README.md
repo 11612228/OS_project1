@@ -44,14 +44,32 @@ Turn the current thread into a `THREAD_BLOCKED` state, record the time to be blc
 ## Task 2: Priority Scheduler
 ### 1.Data structures and functions
 
-#### Added Structs
+#### New Structs
 
 #### Modified Structs
 
-#### Added Functions
+#### New Functions
+##### `bool thread_cmp_priority (const struct list_elem *a, const struct list_elem *b, void *aux UNUSED)`
+- Compares the priority of thread a and thread b, and returns true if a>b.
+##### `void list_insert_ordered (struct list *list, struct list_elem *elem,list_less_func *less, void *aux)`
+- A function can insert the threads sequentially into the ready queue.
 #### Modified Functions
-
-
+##### `void thread_unblock (struct thread *t)`(threads/thread.c)
+- Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
+##### `void thread_yield (void)`(threads/thread.c)
+- Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
+##### `void thread_init(void)`(threads/thread.c)
+- Call `list_insert_ordered()` instead of `list_push_back()` to ensure that the ready queue is the priority queue.
+##### `void thread_set_priority (int new_priority)`(threads/thread.c)
+- Call `thread_yield ()`
+##### `tid_t thread_create (const char *name,int priority,thread_func *function, void *aux)`(threads/thread.c)
+- After calling thread_unblock(t)，add the following code
+```
+if (thread_current ()->priority < priority)
+   {
+     thread_yield ();
+   }
+```
 ### 2.Algorithms
 
 ### 3.Synchronization
