@@ -38,6 +38,7 @@
 Turn the current thread into a `THREAD_BLOCKED` state, record the time to be blcok with block_tick, and join the thread state check by using the OS itself to perform a time break for each tick. Each time check for the thread's block_tick minus one, unblock the thread if block_tick is 0 and put it in the ready queue.
 
 ### 3.Synchronization
+Disable interrupts when the `thread_unblock (struct thread *t)`functions are called.
 
 
 ### 4.Rationale
@@ -111,9 +112,9 @@ When a thread tries to acquire a lock, it should look at the current lock holder
 #### Lock_release
 When we release a thread's lock, we remove the lock it hold. Then, we access the remaining highest priority lock and assign its priority to the thread.
 ### 3.Synchronization
-
+Disable interrupts when the `thread_update_priority` and `thread_set_priority` functions are called.
 ### 4.Rationale
-
+Call `list_insert_ordered` function to make the normal queue a priority queue.Thus reduce the original code changes and additions.
 ## Task 3: Multi-level Feedback Queue Scheduler
 
 ### 1.Data structures and functions
@@ -131,27 +132,40 @@ fixed_t recent_cpu;
 ##### `static void timer_interrupt (struct intr_frame *args UNUSED)`
 - Call `thread_mlfqs_increase_recent_cpu_by_one ()`, `thread_mlfqs_update_load_avg_and_recent_cpu ()` or `thread_mlfqs_update_priority (thread_current ())` to compute and update the priority of the thread at regular intervals.
 ##### `void thread_mlfqs_increase_recent_cpu_by_one (void)`
+- `recent_cpu`plus one.
 ##### `void thread_mlfqs_update_load_avg_and_recent_cpu (void)`
 - Compute load_avg and recent_cpu and update thread.
 ##### `void thread_mlfqs_update_priority (struct thread *t)`
+- Update thread priority.
+##### Some get and set methods
 
-##### `void thread_set_nice (int nice)`
 ### 2.Algorithms
-
+```
+priority= PRI_MAX - (recent_cpu/ 4) - (nice*2)
+recent_cpu= (2*load_avg)/(2*load_avg+ 1) *recent_cpu+nice
+load_avg= (59/60)*load_avg+ (1/60)*ready_threads
+```
+Through the above three formulas, the priority of threads is dynamically calculated and modified every once in `ticks % TIMER_FREQ == 0`.
 ### 3.Synchronization
-
+Synchronization problem can occur when calculating the priority value for each thread. To solve this problem, we disable interrupts while processing it.
 ### 4.Rationale
-
+Multi-level feedback queue scheduling algorithm can not only make high-priority jobs get response but also make processes complete quickly.
 ## Design Document Additional Questions
 timer ticks | R(A) | R(B) | R(C) | P(A) | P(B) | P(C) | thread to run
 ------------|------|------|------|------|------|------|--------------
-0 |   0.0 |   0.0 |   0.0 |  63.0 | 61.0 |  59.0 | A
-4 |   4.0 |   1.0 |   2.0 |  62.0 | 60.75 |  58.5 | A
-8 |   8.0 |   1.0 |   2.0 |  61.0 | 60.75 |  58.5 | A
-12 |  12.0 |   1.0 |   2.0 |  60.0 | 60.75 |  58.5 | B
-16 |  12.0 |   5.0 |   2.0 |  60.0 | 59.75 |  58.5 | A
-20 | 2.363 | 1.454 | 2.181 | 62.40 | 60.63 | 58.45 | A
-24 | 6.363 | 1.454 | 2.181 | 61.40 | 60.63 | 58.45 | A
-28 | 10.36 | 1.454 | 2.181 | 60.40 | 60.63 | 58.45 | B
-32 | 10.36 | 5.454 | 2.181 | 60.40 | 59.63 | 58.45 | A
-36 | 14.36 | 5.454 | 2.181 | 59.40 | 59.63 | 58.45 | B
+0 |   0.0 |   0.0 |   0.0 |  63.0 | 43.0 |  23.0 | A
+4 |   4.0 |   10.0 |   20.0 |  62.0 | 43.0 |  23.0 | A
+8 |   8.0 |   10.0 |   20.0 |  61.0 | 43.0 |  23.0 | A
+12 |   12.0 |   10.0 |   20.0 |  60.0 | 43.0 |  23.0 | A
+16 |   16.0 |   10.0 |   20.0 |  59.0 | 43.0 |  23.0 | A
+20 |   20.0 |   10.0 |   20.0 |  58.0 | 43.0 |  23.0 | A
+24 |   24.0 |   10.0 |   20.0 |  57.0 | 43.0 |  23.0 | A
+28 |   28.0 |   10.0 |   20.0 |  56.0 | 43.0 |  23.0 | A
+32 |   32.0 |   10.0 |   20.0 |  55.0 | 43.0 |  23.0 | A
+36 |   36.0 |   10.0 |   20.0 |  54.0 | 43.0 |  23.0 | A
+It depends on exact implementation details like:
+start load_avg set to 0
+ready_threads at any time-step set to 0
+TIMER_FREQ = 100
+A's nice = 0; B's nice = 10; C's nice = 20;
+order to calculate load_avg, recent_cpu, priority is recent_cpu -> load -> priority
