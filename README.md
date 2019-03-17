@@ -39,7 +39,9 @@ Turn the current thread into a `THREAD_BLOCKED` state, record the time to be blc
 
 ### 3.Synchronization
 
+
 ### 4.Rationale
+The original timer_sleep() implementation is busy waiting and consume CPU resources. This change avoids busy waiting by blocking the thread, then detecting it in `timer_interrupt` and waking the thread.
 
 ## Task 2: Priority Scheduler
 ### 1.Data structures and functions
@@ -59,7 +61,6 @@ int base_priority;
 struct list locks;
 struct lock *lock_waiting;
 ```
-
 #### New Functions
 ##### `bool thread_cmp_priority (const struct list_elem *a, const struct list_elem *b, void *aux UNUSED)`
 - Compares the priority of thread a and thread b, and returns true if a>b.
@@ -97,8 +98,18 @@ if (thread_current ()->priority < priority)
 - Undoing donations after becoming the holder of the lock.
 ##### `void lock_release (struct lock * lock)`
 - Call `thread_remove_lock (lock)`
+##### `void cond_signal (struct condition *cond, struct lock *lock UNUSED)`
+- Change condition queue to priority queue.
+##### `void sema_up (struct semaphore *sema)`
+- Implement a semaphore `wait_queue` as a priority queue
+##### `void sema_down (struct semaphore *sema)`
+- Implement a semaphore `wait_queue` as a priority queue
 ### 2.Algorithms
-
+The main algorithm to realize priority donation is as follows:
+#### Lock_acquire
+When a thread tries to acquire a lock, it should look at the current lock holder if it has to wait. If the current lock holder's priority is lower than its, the `max_priority` of the lock holder is updated to the priority of the thread.
+#### Lock_release
+When we release a thread's lock, we remove the lock it hold. Then, we access the remaining highest priority lock and assign its priority to the thread.
 ### 3.Synchronization
 
 ### 4.Rationale
@@ -106,13 +117,25 @@ if (thread_current ()->priority < priority)
 ## Task 3: Multi-level Feedback Queue Scheduler
 
 ### 1.Data structures and functions
-#### Added Structs
-
+#### Global variable
+##### `fixed_t load_avg`(threads/thread.c)
+- Initialized to `FP_CONST (0)` in the `thread_start()` function.
 #### Modified Structs
-
-#### Added Functions
+##### `struct thread`(threads/thread.h)
+- Add the following member variables:
+```
+int nice;
+fixed_t recent_cpu;
+```
 #### Modified Functions
+##### `static void timer_interrupt (struct intr_frame *args UNUSED)`
+- Call `thread_mlfqs_increase_recent_cpu_by_one ()`, `thread_mlfqs_update_load_avg_and_recent_cpu ()` or `thread_mlfqs_update_priority (thread_current ())` to compute and update the priority of the thread at regular intervals.
+##### `void thread_mlfqs_increase_recent_cpu_by_one (void)`
+##### `void thread_mlfqs_update_load_avg_and_recent_cpu (void)`
+- Compute load_avg and recent_cpu and update thread.
+##### `void thread_mlfqs_update_priority (struct thread *t)`
 
+##### `void thread_set_nice (int nice)`
 ### 2.Algorithms
 
 ### 3.Synchronization
