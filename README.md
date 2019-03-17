@@ -35,14 +35,15 @@
 
 
 ### 2.Algorithms
+Turn the current thread into a `THREAD_BLOCKED` state, record the time to be blcok with block_tick, and join the thread state check by using the OS itself to perform a time break for each tick. Each time check for the thread's block_tick minus one, unblock the thread if block_tick is 0 and put it in the ready queue.
 
 ### 3.Synchronization
 
 ### 4.Rationale
 
 ## Task 2: Priority Scheduler
-
 ### 1.Data structures and functions
+
 #### Added Structs
 
 #### Modified Structs
@@ -74,3 +75,15 @@
 ### 4.Rationale
 
 ## Design Document Additional Questions
+timer ticks | R(A) | R(B) | R(C) | P(A) | P(B) | P(C) | thread to run
+------------|------|------|------|------|------|------|--------------
+0 |   0.0 |   0.0 |   0.0 |  63.0 | 61.0 |  59.0 | A
+4 |   4.0 |   1.0 |   2.0 |  62.0 | 60.75 |  58.5 | A
+8 |   8.0 |   1.0 |   2.0 |  61.0 | 60.75 |  58.5 | A
+12 |  12.0 |   1.0 |   2.0 |  60.0 | 60.75 |  58.5 | B
+16 |  12.0 |   5.0 |   2.0 |  60.0 | 59.75 |  58.5 | A
+20 | 2.363 | 1.454 | 2.181 | 62.40 | 60.63 | 58.45 | A
+24 | 6.363 | 1.454 | 2.181 | 61.40 | 60.63 | 58.45 | A
+28 | 10.36 | 1.454 | 2.181 | 60.40 | 60.63 | 58.45 | B
+32 | 10.36 | 5.454 | 2.181 | 60.40 | 59.63 | 58.45 | A
+36 | 14.36 | 5.454 | 2.181 | 59.40 | 59.63 | 58.45 | B
