@@ -151,6 +151,12 @@ Synchronization problem can occur when calculating the priority value for each t
 ### 4.Rationale
 Multi-level feedback queue scheduling algorithm can not only make high-priority jobs get response but also make processes complete quickly.
 ## Design Document Additional Questions
+It depends on exact implementation details like:
+start load_avg set to 0
+ready_threads at any time-step set to 0
+TIMER_FREQ = 100
+A's nice = 0; B's nice = 10; C's nice = 20;
+order to calculate load_avg, recent_cpu, priority is recent_cpu -> load -> priority
 timer ticks | R(A) | R(B) | R(C) | P(A) | P(B) | P(C) | thread to run
 ------------|------|------|------|------|------|------|--------------
 0 |   0.0 |   0.0 |   0.0 |  63.0 | 43.0 |  23.0 | A
@@ -163,9 +169,4 @@ timer ticks | R(A) | R(B) | R(C) | P(A) | P(B) | P(C) | thread to run
 28 |   28.0 |   10.0 |   20.0 |  56.0 | 43.0 |  23.0 | A
 32 |   32.0 |   10.0 |   20.0 |  55.0 | 43.0 |  23.0 | A
 36 |   36.0 |   10.0 |   20.0 |  54.0 | 43.0 |  23.0 | A
-It depends on exact implementation details like:
-start load_avg set to 0
-ready_threads at any time-step set to 0
-TIMER_FREQ = 100
-A's nice = 0; B's nice = 10; C's nice = 20;
-order to calculate load_avg, recent_cpu, priority is recent_cpu -> load -> priority
+
