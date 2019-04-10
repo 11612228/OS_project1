@@ -14,3 +14,7 @@ So, I invoke `thread_yield()` in the end of `sema_up()` in final pintos. And `lo
 
 ### task III
 In this task, we need to implement MLFQS algorithm to calculate the priority of threads. First, we need floating point calculation. I use the existing `fixed_point.h` code on website. Then, recent_cpu, load_avg, and thread priority are computed using the formulas while threads are being created or `thread_tick()`.
+## Reflection on the project
+Sadly, I pushed by DDL on this project. This project was officially started two days before DDL, while this report was written at 10:00 PM on 10th. I think the reasons why this project is finished in such a hurry are as follows. First, the fear of this unfamiliar task caused me to delay working on it. Second, some thread knowledge that they don't understand until the last week, such as busy waiting, semasphore, locks and so on. Thirdly, the online tutorials are too difficult to understand. Last, after writing the design report, there were exams and innovative experiments.
+The good new is that I basically completed the project and understood the knowledge of busy waiting, thread scheduling and priority transmission. I encountered many bugs and successfully fixed bugs. I exchanged programming experience with my classmates and became familiar with the use of Unix.
+If I had more time I would like to learn more about the MLQFS algorithm and the use of GDB.
