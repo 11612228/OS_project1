@@ -24,6 +24,7 @@ Sadly, I pushed by DDL on this project. This project was officially started two 
 - Second, some thread knowledge that they don't understand until the last week, such as busy waiting, semasphore, locks and so on.
 - Thirdly, the online tutorials are too difficult to understand.
 - Last, after writing the design report, there were exams and innovative experiments.
+## Improvemnt
 The good new is that I basically completed the project and understood the knowledge of busy waiting, thread scheduling and priority transmission. 
 I encountered many bugs and successfully fixed bugs. I exchanged programming experience with my classmates and became familiar with the use of Unix.
 If I had more time I would like to learn more about the MLQFS algorithm and the use of GDB.
