@@ -14,10 +14,13 @@ When I was writing the design document,My knowledge of the pintos was not enough
 - But removing `thread_yield()` from `thread_unblock()` also cause another problem. Thread preemption does not occur immediately after calling `sema_up()`, resulting in the `priority-donate-sema` test where main thread finished eariler than the child threads. 
 - So, I invoke `thread_yield()` in the end of `sema_up()` in final pintos.
 - Because `lock` is based on `semsphore`, `lock_acquire()` calls `sema_down()` to block the thread, and `lock_release()` calls `sema_up()` to unblock the thread. Because `sema_up` call the `thread_yield()`,  `lock_release()` need to call the `sema_up()` in the last line to make sure high-priority threads preempt immediately after calling `lock_release()`.
-
-
 ### task III
 - In this task, we need to implement MLFQS algorithm to calculate the priority of threads. First, we need floating point calculation. I use the existing `fixed_point.h` code on website. Then, recent_cpu, load_avg, and thread priority are computed using the formulas while threads are being created or `thread_tick()`.
+
+## GDB debugger
+
+Bug is in thread.c:411. the function of calculate the recent_cpu is multiplication which caused `recent_cpu` values to overflow. `recent_cpu` type is `fixed_t`. And `fixed_t` is `int`. It should be rewrite `typedef int64_t fixed_t` in `fixed-point.h`.
+
 ## Reflection on the project
 Sadly, I pushed by DDL on this project. This project was officially started four days before DDL, while this report was written at 10:00 PM on 10th. I think the reasons why this project is finished in such a hurry are as follows.
 - First, the fear of this unfamiliar task caused me to delay working on it. 
