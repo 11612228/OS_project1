@@ -1,4 +1,6 @@
-# Final Report
+# Project 1 pintos Final Report
+## 车良宇 11612228
+## email 11612228@mail.sustc.edu.cn
 ## The difference from design document
 When I was writing the design document,My knowledge of the pintos was not enough. Therefore, I make many mistakes in design document. Here, I will show the difference between design document and the final program. 
 ### task I
