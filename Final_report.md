@@ -114,14 +114,14 @@ Hold all open_file.
 
 ##### `close()`(userprog/syscall.c)
 - The execution needs to get `sys_lock`
-- Find the corresponding open_file for fd in open_files.
+- Find the corresponding `open_file` for `fd` in `open_files`.
 - Remove the open_file from open_files 
 - Call `filesys_close()`.
 - Free the open_file.
 
 ##### `seek()`(userprog/syscall.c)
 - The execution needs to get `sys_lock`
-- Find the corresponding open_file for fd in open_files
+- Find the corresponding `open_file` for `fd` in `open_files`.
 - Call `filesys_seek()`.
 ##### `tell()`(userprog/syscall.c)
 - This function is like `seek()`
@@ -140,6 +140,8 @@ Initialize `open_files`.
 
 ### Synchronization
 - The race condition is prevented by make `exec_file` write disable while the thread is executing.
+- Ensure that syscall is not executed concurrently by using `sys_lock`.
+
 ### Rationale
 - Check whether the file is not null.
 - Check that command is valid.
