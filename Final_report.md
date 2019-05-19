@@ -24,8 +24,17 @@ In task I, there are four functions that need to be modified. They are `process_
 - Those tests show that this program may have race conditions.
 
 ## Code style
-On
+In code style, I try to keep the same as the original codes, but maybe due to lack of knowledge and experience, it is not a  specification. 
 
+## Interpretability
+- I think most of the code is understandable and simple.
+- I have comments on a lot of complex code, a small part of which are refer from others I also don't fully understand. 
+## Comments
+The code I left behind has been commented out.
+## Reusable functions
+I made reuse functions to reduce duplication of code.
+## Link list
+I haven't re-implement the algorithm for list, I think the original method is enough.
 ## Improvemnt
 The good new is that I basically completed the project and understood the knowledge of busy waiting, thread scheduling and priority transmission. 
 I encountered many bugs and successfully fixed bugs. I exchanged programming experience with my classmates and became familiar with the use of Unix.
