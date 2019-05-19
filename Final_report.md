@@ -1,33 +1,60 @@
 # Project 2 pintos Final Report
 ## 车良宇 11612228
 ## email 11612228@mail.sustc.edu.cn
-
-
-
-## Basic Running
-### Data Structure
-
-### Algorithm
-- For keeping the main process from terminating before it's children, I modified `process_wait(tid)`(in `process.c`) and `struct thread` (in `thread.h`). Define the 'struct child' to record the status of the child process. For `struct thread`, I add the `list children` to store its children. `process_wait(tid)` waits for the child process with the designated tid to finish before continue execution. 
-
-### Synchronization
-
-### Rationale
-
+- For keeping the main process from terminating before it's children, I modified `process_wait(tid)`(in `process.c`) and `struct thread` (in `thread.h`). Define the 'struct child' to record the status of the child process. For `struct thread`, I add the `list children` to store its children. `process_wait(tid)` waits for the child process with the designated tid to finish before continue execution.
 ## task I Argument Passing
 ### Data Structure
-
+None
 ### Algorithm
+#### Modified Functions
+##### `process_execute()`(userprog/process.c)
+- In process_execute (), I split the the file_name into command and arguments by strtok_r().
+- Then, I create a new thread named by the command, whose function is start_process and aux is arguments.
+
+##### `load`(userprog/process.c)
+- File_close (file) is called only when file is Null.
+
+##### `setup_stack()`(userprog/process.c)
+- Implemented arguments separation by traversing each chars to check they are ' ' or '\0'. In addition, I need to consider double spaces.
+- Push command and arguments into the stack.
+- Calculate the argc.
 
 ### Synchronization
+Task 1 does not need to consider synchronization
 
 ### Rationale
-In task I, there are four functions that need to be modified. They are `process_execute()` , `start_process()` , `load` and `setup_stack()`.
+Strtok_r () separates command and arguments, but I can still get command inside args with pg_round_down(). The traversal char  is a powerful way of dealing with two Spaces condition.
 
 ### task II Process Control Syscalls
-### Data Structure
-
+#### New Structs
+##### `struct child`(threads/thread.h)
+- Struct child is used to record the tid of the child process, wait state and exit state.
+##### `lock sys_lock`(userprog/syscall.h)
+Ensure that syscall is not executed concurrently.
+##### `typedef int pid_t`(userprog/syscall.h)
+##### Modified Structs
+##### `struct thread`(threads/thread.h)
+- Add members `lock lock_child` and `cond_child` to implement parent thread waits for the child threads.
+- Add member `list children` to hold the children.
+- Add member `int child_load_status` to hold the child load status.
+####
 ### Algorithm
+#### New Functions
+##### `thread_get_by_id()`(threads/thread.c)
+Iterate through `all_list` for getting the thread whose tid is the designated tid.
+##### `halt()`(userprog/syscall.c)
+
+##### `exit()`(userprog/syscall.c)
+
+##### `wait()`(userprog/syscall.c)
+
+##### `exit()`(userprog/syscall.c)
+
+
+#### Modified Functions
+##### `init_thread`(threads/thread.c)
+Initialize `lock_child`,`cond_child`, `children`, `child_load_status`.
+#####
 
 ### Synchronization
 
@@ -35,8 +62,31 @@ In task I, there are four functions that need to be modified. They are `process_
 
 ### task III File Operation Syscalls 
 ### Data Structure
+#### New Structs
+##### `struct open_file`(userprog/syscall.h)
+Encapsulate fd, file and elem for traversal.
+##### `struct list open_files`(userprog/syscall.h)
+Hold all open_file.
+
+##### Modified Structs
+##### `struct thread`(threads/thread.h)
+- Add member `file *exec_file` to hold the executable file to implement write disable while file is executing.
 
 ### Algorithm
+#### New Functions
+##### `create()`(userprog/syscall.c)
+##### `remove()`(userprog/syscall.c)
+##### `open()`(userprog/syscall.c)
+##### `filesize()`(userprog/syscall.c)
+##### `read()`(userprog/syscall.c)
+##### `write()`(userprog/syscall.c)
+##### `seek()`(userprog/syscall.c)
+##### `tell()`(userprog/syscall.c)
+
+#### Modified Functions
+
+
+
 
 ### Synchronization
 
@@ -46,7 +96,6 @@ In task I, there are four functions that need to be modified. They are `process_
 ### Reflection on the project
 - First of all, I would like to thank Dr. Tang for extending the DDL to May 19th, so that I have enough time to finish this project independently. Due to some reasons, I did not find a suitable teammate, so I reluctantly chose to do it alone.
 - In this project, I finished task 1、task 2 and task 3 on my own. I passed 77 tests, but failed in multi-oom、syn-read and syn-write. 
-- Next, I will outline the changes in the different task below.
 
 ### Problem
 - In multi-oom, when I print some data then it will exit correctly, but without printf, it will meet load fail and cannot exit correctly.
