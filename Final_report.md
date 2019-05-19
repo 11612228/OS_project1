@@ -43,12 +43,21 @@ Ensure that syscall is not executed concurrently.
 ##### `thread_get_by_id()`(threads/thread.c)
 Iterate through `all_list` for getting the thread whose tid is the designated tid.
 ##### `halt()`(userprog/syscall.c)
-
-##### `exit()`(userprog/syscall.c)
-
+Call `shut_down_power_off()`.
 ##### `wait()`(userprog/syscall.c)
-
+Call `process_wait()`.
 ##### `exit()`(userprog/syscall.c)
+- Printf(”%s: exit(%d)\n”, thread_current()−>name, exit_code) to pass the test.
+- Iterate through the children of the parent process of this process and set the is_exit=true, exit status = exit_code of the corresponding child.
+- Call `thread_exit()`
+##### `process_wait()`(userprog/process.c)
+Iterate through children to see if there is a running child waiting for the child to finish.
+##### `process_execute()`(userprog/process.c)
+Initializes the `child` and push it in the `children` of current thread.
+##### `start_process()`(userprog/process.c)
+
+##### `process_exit()`(userprog/process.c)
+
 
 
 #### Modified Functions
